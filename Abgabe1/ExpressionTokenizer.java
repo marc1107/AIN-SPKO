@@ -1,11 +1,10 @@
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class ExprTokenizer {
+public class ExpressionTokenizer {
     public static void main(String[] args) throws IOException {
         String inputFile = "abfahrt-kn.txt";
         String input = new String(Files.readAllBytes(Paths.get(inputFile)));
