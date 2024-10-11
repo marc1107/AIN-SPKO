@@ -23,13 +23,13 @@ public class ExpressionTokenizer {
         }
         System.out.println();
 
-        for (Token t : tokens) {
+        /*for (Token t : tokens) {
             System.out.printf(
                     "%s(\"%s\") ",
                     lexer.getVocabulary().getSymbolicName(t.getType()),
                     replaceWhitespace(t.getText()));
         }
-        System.out.println();
+        System.out.println();*/
     }
 
     private static String replaceWhitespace(String s) {
