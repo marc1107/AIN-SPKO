@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 
 public class ExpressionTokenizer {
     public static void main(String[] args) throws IOException {
-        String inputFile = "abfahrt-kn.txt";
+        String inputFile = "Abgabe1/abfahrt-kn.txt";
         String input = new String(Files.readAllBytes(Paths.get(inputFile)));
 
         AbfahrtenLexer lexer = new AbfahrtenLexer(CharStreams.fromString(input));
