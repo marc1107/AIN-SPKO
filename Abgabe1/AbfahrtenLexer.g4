@@ -1,9 +1,10 @@
 lexer grammar AbfahrtenLexer;
 
 // Define tokens for specific words
-DAILY: 'täglich';
 EXCEPTION: 'nicht';
+DAILY: 'täglich';
 ALSO: 'auch';
+UNTIL: 'bis';
 TO: 'nach';
 
 // Define tokens for special characters
@@ -25,7 +26,7 @@ TIME: ([0-1][0-9] | [2][0-3]) ':' [0-5][0-9];
 BUS: 'Bus ' [0-9]+;
 TRAIN: 'RE ' [0-9]+;
 SHIP: 'KAT';
-DESTINATION: [a-zA-ZäöüÄÖÜß/()]+ ((' ' | ', ') [a-zA-ZäöüÄÖÜß/()]+)*;
+DESTINATION: [a-zA-ZäöüÄÖÜß/()]+;
 
 
 // Whitespace handling
