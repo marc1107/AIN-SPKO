@@ -19,7 +19,7 @@ declaration: LET ID ASSIGN expression SEMI;
 printStatement: PRINT LPAREN expression RPAREN SEMI;
 
 // If-Anweisung mit optionalem else-Zweig
-ifStatement: IF LPAREN expression RPAREN LBRACE statement+ RBRACE (ELSE LBRACE statement+ RBRACE)?;
+ifStatement: IF LPAREN comparison RPAREN LBRACE statement+ RBRACE (ELSE LBRACE statement+ RBRACE)?;
 
 // Ausdrücke können Zahlen, Bezeichner oder arithmetische Ausdrücke sein
 expression:
