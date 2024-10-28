@@ -32,5 +32,5 @@ RPAREN: ')';
 LBRACE: '{';
 RBRACE: '}';
 
-// Whitespace (wird ignoriert)
+// Whitespace
 WS: [ \t\r\n]+ -> skip;
