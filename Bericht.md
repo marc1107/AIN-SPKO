@@ -254,13 +254,13 @@ Anschließend konnte mit dem Command `grun SimpleLang program -gui <Testfile>` d
 Dies habe ich für alle 3 Testfiles durchgeführt.
 
 Hier das Ergebnis für Test 1.txt:
-<img src="Abgabe2/antlr4_parse_tree_test1.png" style="background-color: white;" />
+![Parse Tree Test 1](Abgabe2/antlr4_parse_tree_test1.png)
 
 Ergebnis für Test 2.txt:
-<img src="Abgabe2/antlr4_parse_tree_test2.png" style="background-color: white;" />
+![Parse Tree Test 2](Abgabe2/antlr4_parse_tree_test2.png)
 
 Ergebnis für Test 3.txt:
-<img src="Abgabe2/antlr4_parse_tree_test3.png" style="background-color: white;" />
+![Parse Tree Test 3](Abgabe2/antlr4_parse_tree_test3.png)
 
 #### Probleme a)
 
