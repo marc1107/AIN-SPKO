@@ -11,7 +11,7 @@ public class SimpleLangToAst {
     }
 
     public static void main(String[] args) throws IOException {
-        String inputFile = "Abgabe2/Test2.txt";
+        String inputFile = "Abgabe2/Test1.txt";
         String input = new String(Files.readAllBytes(Paths.get(inputFile)));
 
         SimpleLangLexer lexer = new SimpleLangLexer(CharStreams.fromString(input));

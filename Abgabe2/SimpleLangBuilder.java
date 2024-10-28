@@ -28,37 +28,32 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
 
     @Override
     public void exitIfStatement(SimpleLangParser.IfStatementContext ctx) {
-        // List to hold else branch statements, if present
         List<StatementNode> elseBranch = new ArrayList<>();
         if (ctx.ELSE() != null) {
-            // Access statements in the else branch
             for (SimpleLangParser.StatementContext stmtCtx : ctx.statement().subList(1, ctx.statement().size())) {
-                elseBranch.add(0, (StatementNode) this.stack.pop());
+                elseBranch.addFirst((StatementNode) this.stack.pop());
             }
         }
 
-        // List to hold then branch statements
         List<StatementNode> thenBranch = new ArrayList<>();
         for (SimpleLangParser.StatementContext stmtCtx : ctx.statement().subList(0, 1)) {
-            thenBranch.add(0, (StatementNode) this.stack.pop());
+            thenBranch.addFirst((StatementNode) this.stack.pop());
         }
 
-        // Pop condition expression from stack
         ComparisonNode condition = (ComparisonNode) this.stack.pop();
 
-        // Push new IfNode onto stack
         this.stack.push(new IfNode(condition, thenBranch, elseBranch));
     }
 
     @Override
     public void exitExpression(SimpleLangParser.ExpressionContext ctx) {
-        if (ctx.children.size() == 1) { // ID or NUMBER
+        if (ctx.children.size() == 1) {
             if (ctx.ID() != null) {
                 this.stack.push(new IdentifierNode(ctx.ID().getText()));
             } else if (ctx.NUMBER() != null) {
                 this.stack.push(new NumberNode(Integer.parseInt(ctx.NUMBER().getText())));
             }
-        } else if (ctx.children.size() == 3) { // Binary operation
+        } else if (ctx.children.size() == 3) {
             ExpressionNode right = (ExpressionNode) this.stack.pop();
             ExpressionNode left = (ExpressionNode) this.stack.pop();
             String operator = ctx.getChild(1).getText();
@@ -79,16 +74,14 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
         List<StatementNode> statements = new ArrayList<>();
         int statementCount = ctx.statement().size();
         for (int i = 0; i < statementCount; i++) {
-            statements.add(0, (StatementNode) this.stack.pop());
+            statements.addFirst((StatementNode) this.stack.pop());
         }
         this.stack.push(new ProgramNode(statements));
     }
 }
 
-// Abstrakte Basisklasse für alle AST-Knoten
 abstract class ASTNode {}
 
-// Klasse für Programm
 class ProgramNode extends ASTNode {
     List<StatementNode> statements;
 
@@ -101,10 +94,8 @@ class ProgramNode extends ASTNode {
     }
 }
 
-// Abstrakte Basisklasse für Anweisungen
 abstract class StatementNode extends ASTNode {}
 
-// Klasse für Variablendeklarationen
 class DeclarationNode extends StatementNode {
     String id;
     ExpressionNode expression;
@@ -119,7 +110,6 @@ class DeclarationNode extends StatementNode {
     }
 }
 
-// Klasse für Druckanweisungen
 class PrintNode extends StatementNode {
     ExpressionNode expression;
 
@@ -132,7 +122,6 @@ class PrintNode extends StatementNode {
     }
 }
 
-// Klasse für If-Anweisungen
 class IfNode extends StatementNode {
     ExpressionNode condition;
     List<StatementNode> thenBranch;
@@ -162,10 +151,8 @@ class IfNode extends StatementNode {
     }
 }
 
-// Abstrakte Basisklasse für Ausdrücke
 abstract class ExpressionNode extends ASTNode {}
 
-// Klassen für verschiedene Ausdruckstypen
 class IdentifierNode extends ExpressionNode {
     String name;
 
