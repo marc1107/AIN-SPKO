@@ -510,7 +510,7 @@ public class SimpleLangToAst {
     }
 
     public static void main(String[] args) throws IOException {
-        String inputFile = "Abgabe2/Test1.txt";
+        String inputFile = "Abgabe2/Test3.txt";
         String input = new String(Files.readAllBytes(Paths.get(inputFile)));
 
         SimpleLangLexer lexer = new SimpleLangLexer(CharStreams.fromString(input));
@@ -523,7 +523,7 @@ public class SimpleLangToAst {
         }
 
         ASTNode ast = new SimpleLangBuilder().build(tree);
-        System.out.printf("Expr.toString(): %n---%n%s%n---%n", ast);
+        System.out.printf("AST: %n---%n%s%n---%n", ast.toString().substring(0, ast.toString().length() - 2) + "\n])");
     }
 }
 ```
@@ -532,29 +532,41 @@ Folgende Ausgaben werden durch SimpleLangToAST für die Testfiles generiert:
 
 ```
 // Test1.txt
-Expr.toString(): 
+AST: 
 ---
-[x = 5, print(x)]
+Program([
+Declaration('x', Number(5), Print(Identifier(x))
+])
 ---
 ```
 
 ```
 // Test2.txt
-Expr.toString(): 
+AST: 
 ---
-[y = 10, if ((y > 5)) {
-  print(y)
-} else {
-  print(0)
-}]
+Program([
+Declaration('y', Number(10), 
+If(
+	Comparison('Identifier(y)', '>', 'Number(5)'),
+	Then(
+		Print(Identifier(y))
+	),
+	Else(
+		Print(Number(0))
+	)
+)
+])
 ---
 ```
 
 ```
 // Test3.txt
-Expr.toString(): 
+AST: 
 ---
-[a = 3, b = (a + 2), print(b)]
+Program([
+Declaration('a', Number(3), 
+Declaration('b', BinaryOperation('Identifier(a)', '+', 'Number(2)'), Print(Identifier(b))
+])
 ---
 ```
 

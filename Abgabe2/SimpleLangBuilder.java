@@ -90,7 +90,7 @@ class ProgramNode extends ASTNode {
     }
 
     public String toString() {
-        return statements.toString();
+        return "Program(" + statements.toString() + ")";
     }
 }
 
@@ -106,7 +106,7 @@ class DeclarationNode extends StatementNode {
     }
 
     public String toString() {
-        return id + " = " + expression;
+        return String.format("\nDeclaration('%s', %s", id, expression);
     }
 }
 
@@ -118,7 +118,7 @@ class PrintNode extends StatementNode {
     }
 
     public String toString() {
-        return String.format("print(%s)", this.expression);
+        return String.format("Print(%s)", this.expression);
     }
 }
 
@@ -135,18 +135,21 @@ class IfNode extends StatementNode {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("if (").append(this.condition).append(") {\n");
+        sb.append("\nIf(\n\t").append(this.condition).append(",\n\tThen(");
         for (StatementNode stmt : this.thenBranch) {
-            sb.append("  ").append(stmt).append("\n");
+            sb.append("\n\t\t").append(stmt).append(",");
         }
-        sb.append("}");
+        sb.replace(sb.length() - 1, sb.length(), "");
+        sb.append("\n\t)");
         if (!this.elseBranch.isEmpty()) {
-            sb.append(" else {\n");
+            sb.append(",\n\tElse(");
             for (StatementNode stmt : this.elseBranch) {
-                sb.append("  ").append(stmt).append("\n");
+                sb.append("\n\t\t").append(stmt).append(",");
             }
-            sb.append("}");
+            sb.replace(sb.length() - 1, sb.length(), "");
+            sb.append("\n\t)");
         }
+        sb.append("\n)");
         return sb.toString();
     }
 }
@@ -161,7 +164,7 @@ class IdentifierNode extends ExpressionNode {
     }
 
     public String toString() {
-        return this.name;
+        return String.format("Identifier(%s)", this.name);
     }
 }
 
@@ -177,7 +180,7 @@ class ComparisonNode extends ExpressionNode {
     }
 
     public String toString() {
-        return String.format("(%s %s %s)", this.left, this.operator, this.right);
+        return String.format("Comparison('%s', '%s', '%s')", this.left, this.operator, this.right);
     }
 }
 
@@ -189,7 +192,7 @@ class NumberNode extends ExpressionNode {
     }
 
     public String toString() {
-        return Integer.toString(this.value);
+        return String.format("Number(%s)", this.value);
     }
 }
 
@@ -205,6 +208,6 @@ class BinaryOperationNode extends ExpressionNode {
     }
 
     public String toString() {
-        return String.format("(%s %s %s)", this.left, this.operator, this.right);
+        return String.format("BinaryOperation('%s', '%s', '%s')", this.left, this.operator, this.right);
     }
 }
