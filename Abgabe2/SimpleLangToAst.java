@@ -24,7 +24,7 @@ public class SimpleLangToAst {
         }
 
         ASTNode ast = new SimpleLangBuilder().build(tree);
-        System.out.printf("Expr.toString(): %n---%n%s%n---%n", ast);
+        System.out.printf("AST: %n---%n%s%n---%n", ast);
     }
 }
 
