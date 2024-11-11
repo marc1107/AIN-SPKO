@@ -1,12 +1,17 @@
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class SimpleLangBuilder extends SimpleLangParserBaseListener {
     private final Stack<ASTNode> stack = new Stack<>();
+
+    private Map<String, String> symbolTable = new HashMap<>();
+
+    private void semanticErr(Token token, String message) {
+        System.err.printf("Line %d:%d - %s%n", token.getLine(), token.getCharPositionInLine(), message);
+    }
 
     public ASTNode build(ParseTree tree) {
         new ParseTreeWalker().walk(this, tree);
@@ -16,6 +21,14 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
     @Override
     public void exitDeclaration(SimpleLangParser.DeclarationContext ctx) {
         String id = ctx.ID().getText();
+
+        // Check if the identifier is already declared
+        if (this.symbolTable.containsKey(id)) {
+            this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is already declared.", id));
+        } else {
+            this.symbolTable.put(id, "int");
+        }
+
         ExpressionNode expr = (ExpressionNode) this.stack.pop();
         this.stack.push(new DeclarationNode(id, expr));
     }
@@ -49,6 +62,12 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
     public void exitExpression(SimpleLangParser.ExpressionContext ctx) {
         if (ctx.children.size() == 1) {
             if (ctx.ID() != null) {
+                // Check if the identifier is declared
+                String id = ctx.ID().getText();
+                if (!this.symbolTable.containsKey(id)) {
+                    this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is not declared.", id));
+                }
+
                 this.stack.push(new IdentifierNode(ctx.ID().getText()));
             } else if (ctx.NUMBER() != null) {
                 this.stack.push(new NumberNode(Integer.parseInt(ctx.NUMBER().getText())));

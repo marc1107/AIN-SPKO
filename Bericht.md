@@ -587,6 +587,110 @@ Folgenden Nichtterminale werden in meinem AST weggelassen:
 
 ### Aufgabe
 
+Im ersten Teil der dritten Abgabe sollten zunächst folgende Fragen zu der zuvor definierten Sprache beantwortet werden:
+- Lässt sich eine statische Semantik für Ihre abstrakte Syntax angeben?
+- Erlaubt Ihre konkrete Syntax Formulierungen, die die statische Semantik verletzen?
+
+Daraufhin sollte eine statische Semantikprüfung für die Sprache ergänzt werden.
+
+Im zweiten Teil der Abgabe sollte für die eigene Sprache mindestens eine dynamische Semantik programmiert werden.
+
 ### Vorgehensweise
+
+#### a) Statische Semantik
+
+**Lässt sich eine statische Semantik für Ihre abstrakte Syntax angeben?**<br>
+Ja, eine statische Semantik kann für die abstrakte Syntax angegeben werden:
+- Variablendeklarationen: Eine Variable muss deklariert werden, bevor sie in einer Expression verwendet wird.<br>
+- Mehrfachdeklaration: Eine Variable darf nicht mehrmals im selben Gültigkeitsbereich deklariert werden.<br>
+
+**Erlaubt Ihre konkrete Syntax Formulierungen, die die statische Semantik verletzen?**<br>
+Ja, die konkrete Syntax erlaubt Formulierungen, die die statische Semantik verletzen könnten:
+- Verwendung nicht deklarierter Variablen: Die Grammatik erlaubt es, dass eine Variable in einem Ausdruck verwendet wird, ohne dass sie vorher deklariert wurde.<br>
+- Mehrfachdeklaration: Die Grammatik erlaubt es, dass eine Variable mehrmals im selben Gültigkeitsbereich deklariert wird.<br>
+
+#### Statische Semantikprüfung
+Um die statische Semantikprüfung zu implementieren, habe ich meine Klasse `SimpleLangBuilder` erweitert.
+Zuerst habe ich eine Map `symbolTable` erstellt, um die Variablendeklarationen zu speichern.
+Außerdem wurde eine Methode zur Ausgabe eines Semantikfehlers hinzugefügt. Diese Methode wird aufgerufen, wenn ein Fehler
+in der statischen Semantik gefunden wird und gibt die Zeile und Position des Fehlers sowie die Ursache aus.
+
+Anschließend habe ich die Methoden `exitDeclaration` sowie `exitExpression` erweitert, um die Variablendeklarationen zu überprüfen.
+Bei 'exitDeclaration' wird überprüft, ob die Variable bereits deklariert wurde, um sicherzustellen, dass keine Variable doppelt
+deklariert wird. Bei 'exitExpression' wird überprüft, ob die Variable vorher deklariert wurde, damit sie ohne Deklaration
+aufgerufen werden kann.
+
+```java
+private Map<String, String> symbolTable = new HashMap<>();
+
+private void semanticErr(Token token, String message) {
+    System.err.printf("Line %d:%d - %s%n", token.getLine(), token.getCharPositionInLine(), message);
+}
+
+@Override
+public void exitDeclaration(SimpleLangParser.DeclarationContext ctx) {
+    String id = ctx.ID().getText();
+
+    // Check if the identifier is already declared
+    if (this.symbolTable.containsKey(id)) {
+        this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is already declared.", id));
+    } else {
+        this.symbolTable.put(id, "int");
+    }
+
+    ExpressionNode expr = (ExpressionNode) this.stack.pop();
+    this.stack.push(new DeclarationNode(id, expr));
+}
+
+@Override
+public void exitExpression(SimpleLangParser.ExpressionContext ctx) {
+    if (ctx.children.size() == 1) {
+        if (ctx.ID() != null) {
+            // Check if the identifier is declared
+            String id = ctx.ID().getText();
+            if (!this.symbolTable.containsKey(id)) {
+                this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is not declared.", id));
+            }
+
+            this.stack.push(new IdentifierNode(ctx.ID().getText()));
+        } else if (ctx.NUMBER() != null) {
+            this.stack.push(new NumberNode(Integer.parseInt(ctx.NUMBER().getText())));
+        }
+    } else if (ctx.children.size() == 3) {
+        ExpressionNode right = (ExpressionNode) this.stack.pop();
+        ExpressionNode left = (ExpressionNode) this.stack.pop();
+        String operator = ctx.getChild(1).getText();
+        this.stack.push(new BinaryOperationNode(left, operator, right));
+    }
+}
+```
+
+Um zu Testen, ob die statische Semantikprüfung funktioniert, habe ich folgenden Testfall erstellt:
+
+```javascript
+// Test 4.txt
+let a = 3;
+let b = a + 2;
+print(b);
+
+let a = 4;
+print(c);
+```
+
+Die Ausgabe für Test 4.txt sieht wie folgt aus:
+
+```
+Line 5:4 - Identifier 'a' is already declared.
+Line 6:6 - Identifier 'c' is not declared.
+
+AST: 
+---
+Program([
+Declaration('a', Number(3), 
+Declaration('b', BinaryOperation('Identifier(a)', '+', 'Number(2)'), Print(Identifier(b)), 
+Declaration('a', Number(4), Print(Identifier(c))
+])
+---
+```
 
 #### Probleme
