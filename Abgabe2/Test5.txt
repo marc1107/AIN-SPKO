@@ -1,0 +1,6 @@
+let a = "test";
+let b = a + 2;
+print(b);
+
+let a = 4;
+print(c);

@@ -12,6 +12,8 @@ ID: [a-zA-Z_] [a-zA-Z_0-9]*;
 // Zahlen
 NUMBER: [0-9]+;
 
+STRING: '"' (~["\r\n])* '"';
+
 // Operatoren
 PLUS: '+';
 MINUS: '-';

@@ -71,6 +71,8 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
                 this.stack.push(new IdentifierNode(ctx.ID().getText()));
             } else if (ctx.NUMBER() != null) {
                 this.stack.push(new NumberNode(Integer.parseInt(ctx.NUMBER().getText())));
+            } else if (ctx.STRING() != null) {
+                this.stack.push(new StringNode(ctx.STRING().getText()));
             }
         } else if (ctx.children.size() == 3) {
             ExpressionNode right = (ExpressionNode) this.stack.pop();
@@ -212,6 +214,18 @@ class NumberNode extends ExpressionNode {
 
     public String toString() {
         return String.format("Number(%s)", this.value);
+    }
+}
+
+class StringNode extends ExpressionNode {
+    String value;
+
+    StringNode(String value) {
+        this.value = value;
+    }
+
+    public String toString() {
+        return String.format("String(%s)", this.value);
     }
 }
 

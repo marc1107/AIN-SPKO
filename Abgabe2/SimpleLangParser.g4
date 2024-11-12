@@ -19,6 +19,7 @@ ifStatement: IF LPAREN comparison RPAREN LBRACE statement+ RBRACE (ELSE LBRACE s
 expression:
     ID
     | NUMBER
+    | STRING
     | expression PLUS expression
     | expression MINUS expression
     | expression STAR expression
