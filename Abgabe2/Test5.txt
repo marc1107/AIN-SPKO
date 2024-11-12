@@ -1,6 +1,10 @@
-let a = "test";
+let a = 4;
 let b = a + 2;
-print(b);
 
-a = 4;
-print(c);
+a = "test";
+
+if (a == b) {
+    print(a);
+} else {
+    print(b);
+}
