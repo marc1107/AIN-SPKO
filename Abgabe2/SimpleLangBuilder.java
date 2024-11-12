@@ -34,6 +34,19 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
     }
 
     @Override
+    public void exitAssignment(SimpleLangParser.AssignmentContext ctx) {
+        String id = ctx.ID().getText();
+
+        // Check if the identifier is declared
+        if (!this.symbolTable.containsKey(id)) {
+            this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is not declared.", id));
+        }
+
+        ExpressionNode expr = (ExpressionNode) this.stack.pop();
+        this.stack.push(new AssignmentNode(id, expr));
+    }
+
+    @Override
     public void exitPrintStatement(SimpleLangParser.PrintStatementContext ctx) {
         ExpressionNode expr = (ExpressionNode) this.stack.pop();
         this.stack.push(new PrintNode(expr));
@@ -128,6 +141,20 @@ class DeclarationNode extends StatementNode {
 
     public String toString() {
         return String.format("\nDeclaration('%s', %s", id, expression);
+    }
+}
+
+class AssignmentNode extends StatementNode {
+    String id;
+    ExpressionNode expression;
+
+    AssignmentNode(String id, ExpressionNode expression) {
+        this.id = id;
+        this.expression = expression;
+    }
+
+    public String toString() {
+        return String.format("Assignment('%s', %s)", id, expression);
     }
 }
 

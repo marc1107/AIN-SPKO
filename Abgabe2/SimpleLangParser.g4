@@ -6,11 +6,14 @@ program: statement+;
 
 statement:
     declaration
+    | assignment
     | printStatement
     | ifStatement
     ;
 
 declaration: LET ID ASSIGN expression SEMI;
+
+assignment: ID ASSIGN expression SEMI;
 
 printStatement: PRINT LPAREN expression RPAREN SEMI;
 
