@@ -25,8 +25,10 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
         // Check if the identifier is already declared
         if (this.symbolTable.containsKey(id)) {
             this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is already declared.", id));
-        } else {
-            this.symbolTable.put(id, "int");
+        } else if (ctx.expression().NUMBER() != null) {
+            this.symbolTable.put(id, "number");
+        } else if (ctx.expression().STRING() != null) {
+            this.symbolTable.put(id, "string");
         }
 
         ExpressionNode expr = (ExpressionNode) this.stack.pop();
@@ -40,6 +42,12 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
         // Check if the identifier is declared
         if (!this.symbolTable.containsKey(id)) {
             this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is not declared.", id));
+        }
+
+        if (this.symbolTable.get(id).equals("number") && ctx.expression().STRING() != null) {
+            symbolTable.put(id, "string");
+        } else if (this.symbolTable.get(id).equals("string") && ctx.expression().NUMBER() != null) {
+            symbolTable.put(id, "number");
         }
 
         ExpressionNode expr = (ExpressionNode) this.stack.pop();
@@ -100,7 +108,29 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
         ExpressionNode right = (ExpressionNode) this.stack.pop();
         ExpressionNode left = (ExpressionNode) this.stack.pop();
         String operator = ctx.getChild(1).getText();
+
+        // Check if both expression nodes are of the same type
+        String leftType = getExpressionNodeType(left);
+        String rightType = getExpressionNodeType(right);
+
+        if (!leftType.equals(rightType)) {
+            this.semanticErr(ctx.start, "Type mismatch: cannot compare " + leftType + " with " + rightType);
+        }
+
         this.stack.push(new ComparisonNode(left, operator, right));
+    }
+
+    private String getExpressionNodeType(ExpressionNode node) {
+        String leftType = switch (node.getClass().getName()) {
+            case "NumberNode" -> "number";
+            case "StringNode" -> "string";
+            case "IdentifierNode" -> {
+                String id = ((IdentifierNode) node).name;
+                yield this.symbolTable.get(id);
+            }
+            default -> "unknown";
+        };
+        return leftType;
     }
 
     @Override

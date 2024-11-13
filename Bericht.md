@@ -670,7 +670,7 @@ Um zu Testen, ob die statische Semantikprüfung funktioniert, habe ich folgenden
 ```javascript
 // Test 4.txt
 let a = 3;
-let b = a + 2;
+let b = 6;
 print(b);
 
 let a = 4;
@@ -682,15 +682,194 @@ Die Ausgabe für Test 4.txt sieht wie folgt aus:
 ```
 Line 5:4 - Identifier 'a' is already declared.
 Line 6:6 - Identifier 'c' is not declared.
-
 AST: 
 ---
 Program([
 Declaration('a', Number(3), 
-Declaration('b', BinaryOperation('Identifier(a)', '+', 'Number(2)'), Print(Identifier(b)), 
+Declaration('b', Number(6), Print(Identifier(b)), 
 Declaration('a', Number(4), Print(Identifier(c))
 ])
 ---
 ```
 
-#### Probleme
+#### b) Dynamische Semantik
+
+Um eine dynamische Semantikprüfung einzufügen habe ich meine Sprache etwas erweitern müssen.
+Dazu habe ich in meiner 'SimpleLangLexer.g4' Datei die Möglichkeit hinzugefügt, einer Variablen nicht nur Numbers 
+sondern auch Strings zuzuordnen. In meinem 'SimpleLangParser.g4' habe ich die Möglichkeit hinzugefügt, Variablen während
+der Laufzeit zu verändern.
+
+Die neuen Lexer und Parser Dateien sehen nun wie folgt aus:
+
+```antlrv4
+// SimpleLangLexer.g4
+lexer grammar SimpleLangLexer;
+
+// Schlüsselwörter
+LET: 'let';
+IF: 'if';
+ELSE: 'else';
+PRINT: 'print';
+
+// Bezeichner
+ID: [a-zA-Z_] [a-zA-Z_0-9]*;
+
+// Zahlen
+NUMBER: [0-9]+;
+
+STRING: '"' (~["\r\n])* '"';
+
+// Operatoren
+PLUS: '+';
+MINUS: '-';
+STAR: '*';
+SLASH: '/';
+EQ: '==';
+NEQ: '!=';
+LT: '<';
+GT: '>';
+LE: '<=';
+GE: '>=';
+
+// Trennzeichen
+SEMI: ';';
+ASSIGN: '=';
+LPAREN: '(';
+RPAREN: ')';
+LBRACE: '{';
+RBRACE: '}';
+
+// Whitespace
+WS: [ \t\r\n]+ -> skip;
+```
+
+```antlrv4
+// SimpleLangParser.g4
+parser grammar SimpleLangParser;
+
+options { tokenVocab = SimpleLangLexer; }
+
+program: statement+;
+
+statement:
+    declaration
+    | assignment
+    | printStatement
+    | ifStatement
+    ;
+
+declaration: LET ID ASSIGN expression SEMI;
+
+assignment: ID ASSIGN expression SEMI;
+
+printStatement: PRINT LPAREN expression RPAREN SEMI;
+
+ifStatement: IF LPAREN comparison RPAREN LBRACE statement+ RBRACE (ELSE LBRACE statement+ RBRACE)?;
+
+expression:
+    ID
+    | NUMBER
+    | STRING
+    | expression PLUS expression
+    | expression MINUS expression
+    | expression STAR expression
+    | expression SLASH expression
+    ;
+
+comparison:
+    expression (EQ | NEQ | LT | GT | LE | GE) expression
+    ;
+```
+
+Außerdem habe ich die statische Semantik zur Eintragung von Strings in die Symboltabelle erweitert und 
+erneute Assignments zugelassen, um Variablen während der Laufzeit zu verändern:
+
+```java
+@Override
+    public void exitDeclaration(SimpleLangParser.DeclarationContext ctx) {
+        String id = ctx.ID().getText();
+
+        // Check if the identifier is already declared
+        if (this.symbolTable.containsKey(id)) {
+            this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is already declared.", id));
+        } else if (ctx.expression().NUMBER() != null) {
+            this.symbolTable.put(id, "number");
+        } else if (ctx.expression().STRING() != null) {
+            this.symbolTable.put(id, "string");
+        }
+
+        ExpressionNode expr = (ExpressionNode) this.stack.pop();
+        this.stack.push(new DeclarationNode(id, expr));
+    }
+
+    @Override
+    public void exitAssignment(SimpleLangParser.AssignmentContext ctx) {
+        String id = ctx.ID().getText();
+
+        // Check if the identifier is declared
+        if (!this.symbolTable.containsKey(id)) {
+            this.semanticErr(ctx.ID().getSymbol(), String.format("Identifier '%s' is not declared.", id));
+        }
+
+        if (this.symbolTable.get(id).equals("number") && ctx.expression().STRING() != null) {
+            symbolTable.put(id, "string");
+        } else if (this.symbolTable.get(id).equals("string") && ctx.expression().NUMBER() != null) {
+            symbolTable.put(id, "number");
+        }
+
+        ExpressionNode expr = (ExpressionNode) this.stack.pop();
+        this.stack.push(new AssignmentNode(id, expr));
+    }
+```
+
+To test the dynamic semantics, I created the following test case:
+
+```javascript
+// Test 5.txt
+let a = 4;
+let b = 5;
+
+a = "test";
+
+if (a == b) {
+    print(a);
+} else {
+    print(b);
+}
+```
+
+Which produces the following output when executed:
+
+```
+Line 6:4 - Type mismatch: cannot compare string with number
+AST: 
+---
+Program([
+Declaration('a', Number(4), 
+Declaration('b', Number(5), Assignment('a', String("test")), 
+If(
+	Comparison('Identifier(a)', '==', 'Identifier(b)'),
+	Then(
+		Print(Identifier(a))
+	),
+	Else(
+		Print(Identifier(b))
+	)
+)
+])
+---
+```
+
+## Abgabe 4
+
+### Aufgabe
+
+Für den Teil a) der zweiten Abgabe sollte sich eine kleine Sprache ausgedacht werden, für welche ein Lexer und Parser erstellt werden soll.
+Anschließend sollte für einige Beispieltexte der Parse Tree mit org.antlr.v4.gui.TestRig visualisiert werden.
+Im Teil b) sollte die abstrakte Syntax aus Teil a) definiert und ein Java-Programm zur Überführung des Parse Trees in einen abstrakten Syntax Baum erstellt werden.
+
+### Vorgehensweise
+
+#### Überschrift 1
+
+### Probleme
