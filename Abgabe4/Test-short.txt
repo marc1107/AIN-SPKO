@@ -1,0 +1,6 @@
+Dies ist eine Testzeile mit mehr als zwanzig Zeichen.
+Kurz.
+
+Zeile mit genau zwanzig Zeichen.
+12345678901234567890
+Noch eine lange Zeile mit mehr als zwanzig Zeichen.

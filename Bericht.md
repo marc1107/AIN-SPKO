@@ -864,12 +864,207 @@ If(
 
 ### Aufgabe
 
-Für den Teil a) der zweiten Abgabe sollte sich eine kleine Sprache ausgedacht werden, für welche ein Lexer und Parser erstellt werden soll.
-Anschließend sollte für einige Beispieltexte der Parse Tree mit org.antlr.v4.gui.TestRig visualisiert werden.
-Im Teil b) sollte die abstrakte Syntax aus Teil a) definiert und ein Java-Programm zur Überführung des Parse Trees in einen abstrakten Syntax Baum erstellt werden.
+In Aufgabenteil a) sollte ein gegebenes Java Programm um die Klassenmethoden readLines, removeEmptyLines, 
+removeShortLines und totalLineLengths mit Verwendung von Schleifen und Verzweigungen erweitert werden.
+Um Teil b) zu lösen, sollte das in a) geschriebene Programm mit Hilfe von java.util.streams und Lambdas auf einen
+funktionalen Stil umgestellt werden, wobei das Programm danach keine Schleifen, Verzweigungen und Seiteneffekte mehr
+aufweisen darf. Anschließend sollten die beiden Programme in Teil c) verglichen werden.
+
+### Teil a)
+
+Die einzelnen Methoden wurden in der Klasse `Procedural` implementiert. Die Methoden `readLines`, `removeEmptyLines`,
+`removeShortLines` und `totalLineLengths` wurden mit Schleifen und Verzweigungen implementiert.
+
+```java
+// Procedural.java
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
+
+import java.io.BufferedReader;
+import java.util.LinkedList;
+
+public final class Procedural {
+    private Procedural() { }
+
+    private static final int MIN_LENGTH = 20;
+
+    public static void main(String[] args) throws IOException {
+        var input = Paths.get(args[0]);
+        var lines = new LinkedList<String>();
+
+        long start = System.nanoTime();
+
+        readLines(Files.newBufferedReader(input), lines);
+        removeEmptyLines(lines);
+        removeShortLines(lines);
+        int n = totalLineLengths(lines);
+
+        long stop = System.nanoTime();
+
+        System.out.printf("result = %d (%d microsec)%n", n, (stop - start) / 1000);
+    }
+
+    private static void readLines(BufferedReader reader, LinkedList<String> lines) throws IOException {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+    }
+
+    private static void removeEmptyLines(LinkedList<String> lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).trim().isEmpty()) {
+                lines.remove(i);
+                i--;
+            }
+        }
+    }
+
+    private static void removeShortLines(LinkedList<String> lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).length() < MIN_LENGTH) {
+                lines.remove(i);
+                i--;
+            }
+        }
+    }
+
+    private static int totalLineLengths(LinkedList<String> lines) {
+        int totalLength = 0;
+        for (String line : lines) {
+            totalLength += line.length();
+        }
+        return totalLength;
+    }
+}
+```
+
+### Teil b)
+
+Das Programm wurde in der Klasse `Functional` umgeschrieben, um die Methoden mit Hilfe von Streams und Lambdas
+in einen funktionalen Stil umzustellen. Dabei wurden die Methoden `readLines`, `removeEmptyLines`, `removeShortLines`
+und `totalLineLengths` umgeschrieben.
+
+```java
+// Functional.java
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
+
+import java.io.BufferedReader;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
+
+public final class Functional {
+    private Functional() { }
+
+    private static final int MIN_LENGTH = 20;
+
+    public static void main(String[] args) throws IOException {
+        var input = Paths.get(args[0]);
+        var lines = new LinkedList<String>();
+
+        long start = System.nanoTime();
+
+        readLines(Files.newBufferedReader(input), lines);
+        removeEmptyLines(lines);
+        removeShortLines(lines);
+        int n = totalLineLengths(lines);
+
+        long stop = System.nanoTime();
+
+        System.out.printf("result = %d (%d microsec)%n", n, (stop - start) / 1000);
+    }
+
+    private static void readLines(BufferedReader reader, LinkedList<String> lines) {
+        lines.addAll(reader.lines().toList());
+    }
+
+    private static void removeEmptyLines(LinkedList<String> lines) {
+        var filtered = lines.stream()
+                .filter(line -> !line.trim().isEmpty())
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        lines.clear();
+        lines.addAll(filtered);
+    }
+
+    private static void removeShortLines(LinkedList<String> lines) {
+        var filtered = lines.stream()
+                .filter(line -> line.length() >= MIN_LENGTH)
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        lines.clear();
+        lines.addAll(filtered);
+    }
+
+    private static int totalLineLengths(LinkedList<String> lines) {
+        return lines.stream()
+                .mapToInt(String::length)
+                .sum();
+    }
+}
+```
+
+### Teil c) Vergleich
+
+Für den Vergleich habe ich 2 Testdateien erstellt, eine kurz und eine lang, um die Unterschiede in der Laufzeit zu sehen.
+Die längere Testdatei hat denselben Inhalt, allerdings mehrfach kopiert, um insgesamt 28013 Zeilen zu haben.
+Die kurze Testdatei hat 6 Zeilen.
+
+Inhalt der Testdateien:
+```
+Dies ist eine Testzeile mit mehr als zwanzig Zeichen.
+Kurz.
+
+Zeile mit genau zwanzig Zeichen.
+12345678901234567890
+Noch eine lange Zeile mit mehr als zwanzig Zeichen.
+```
+
+Für beide Testdateien habe ich die Laufzeit für die prozedurale und funktionale Implementierung gemessen.
+Das Programm wurde jeweils 5 Mal ausgeführt und die Laufzeit gemittelt.
+
+**Ergebnisse für die kurze Testdatei:**
+
+| Durchlauf | Prozedural (microsec) | Funktional (microsec) |
+|-----------|-----------------------|-----------------------|
+| 1         | 10472                 | 15080                 |
+| 2         | 7917                  | 11350                 |
+| 3         | 7960                  | 13729                 |
+| 4         | 11545                 | 12535                 |
+| 5         | 8966                  | 17404                 |
+
+**Ergebnisse für die lange Testdatei:**
+
+| Durchlauf | Prozedural (microsec) | Funktional (microsec) |
+|-----------|-----------------------|-----------------------|
+| 1         | 988918                | 36396                 |
+| 2         | 1012826               | 36025                 |
+| 3         | 961305                | 35151                 |
+| 4         | 948288                | 40268                 |
+| 5         | 928869                | 37637                 |
+
+**Die Ergebnisse im Durchschnitt (gerundet) übersichtlich dargestellt:**
+
+| Testdatei | Total line lengths | Prozedural (microsec) | Funktional (microsec) |
+|-----------|--------------------|-----------------------|-----------------------|
+| Kurz      | 156                | 10072                 | 14020                 |
+| Lang      | 624312             | 949041                | 37095                 |
+
+
+Bei den Ergebnissen fällt auf, dass die Laufzeit des funktionalen Programms bei der langen Testdatei deutlich kürzer ist
+als die des prozeduralen Programms. Bei der kurzen Testdatei ist die Laufzeit des funktionalen Programms allerdings
+etwas länger. Dies liegt daran, dass die Verarbeitung von Streams und Lambdas bei kleinen Datenmengen langsamer
+sein kann als die Verarbeitung mit Schleifen und Verzweigungen. Bei großen Datenmengen hingegen ist die Verarbeitung
+mit Streams und Lambdas schneller, da sie parallelisiert werden können.
+
+
+## Abgabe 5
+
+### Aufgabe
 
 ### Vorgehensweise
-
-#### Überschrift 1
 
 ### Probleme
