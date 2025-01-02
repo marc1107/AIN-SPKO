@@ -1063,7 +1063,19 @@ mit Streams und Lambdas schneller, da sie parallelisiert werden können.
 
 ## Abgabe 5
 
-### Aufgabe
+### 5.a.1)
+
+| Liste 1       | Liste 2              | Instanziierung                     |
+|---------------|----------------------|------------------------------------|
+| [X,Y,Z]       | [john,likes,fish]    | X = john, Y = likes, Z = fish      |
+| [cat]         | [X\|Y]               | X = cat, Y = []                    |
+| [X,Y\|Z]      | [mary,likes,wine]    | X = mary, Y = likes, Z = [wine]    |
+| [[the,Y]\|Z]  | [[X,hare],[is,here]] | X = the, Y = hare, Z = [[is,here]] |
+| [golden\|T]   | [golden,norfolk]     | T = [norfolk]                      |
+| [white,horse] | [horse,X]            | Listen stimmen nicht überein       |
+| [white\|Q]    | [P,horse]            | P = white, Q = [horse]             |
+
+
 
 ### Vorgehensweise
 
