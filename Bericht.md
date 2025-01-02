@@ -1075,7 +1075,83 @@ mit Streams und Lambdas schneller, da sie parallelisiert werden können.
 | [white,horse] | [horse,X]            | Listen stimmen nicht überein       |
 | [white\|Q]    | [P,horse]            | P = white, Q = [horse]             |
 
+### 5.a.2)
 
+```prolog
+fakultaet(0, 1).
+
+fakultaet(N, F) :- 
+    N > 0, 
+    N1 is N - 1, 
+    fakultaet(N1, F1), 
+    F is N * F1.
+```
+
+Hierbei gibt es zwei Fälle:
+1. Der Basisfall, wenn N = 0 ist, dann ist die Fakultät 1.
+2. Der rekursive Fall, wenn N > 0 ist, dann wird die Fakultät von N berechnet, indem die Fakultät von N-1 berechnet wird und mit N multipliziert wird.
+
+### 5.a.3)
+
+`append(X, Y, [1,2,3,4]).` sucht nach zwei Listen X und Y, die zusammengefügt die Liste `[1,2,3,4]` ergeben.
+
+`append(X, [1,2,3,4], Y).` sucht nach einer Liste X, die mit der Liste `[1,2,3,4]` zusammengefügt die Liste Y ergibt.
+
+### 5 b)
+
+```prolog
+sum([], 0).
+
+sum([H|T], Sum) :-
+    sum(T, RestSum),
+    Sum is H + RestSum.
+```
+
+Hierbei gibt es zwei Fälle:
+1. Der Basisfall, wenn die Liste leer ist, dann ist die Summe 0.
+2. Der rekursive Fall, wenn die Liste nicht leer ist, dann wird die Summe der Liste berechnet, indem das erste Element der Liste mit der Summe des Rests der Liste addiert wird.
+
+### 5 c)
+
+```prolog
+% Fakten
+zug(konstanz, 08.39, offenburg, 10.59).
+zug(konstanz, 08.39, karlsruhe, 11.49).
+zug(konstanz, 09.06, singen, 09.31).
+zug(singen, 09.36, stuttgart, 11.32).
+zug(offenburg, 11.28, mannheim, 12.24).
+zug(karlsruhe, 12.06, mainz, 13.47).
+zug(stuttgart, 11.51, mannheim, 12.28).
+zug(mannheim, 12.39, mainz, 13.18).
+
+% Basisfall: Direkte Verbindung
+verbindung(Start, AbfahrtszeitMin, Ziel, [zug(Start, Abfahrtszeit, Ziel, Ankunftszeit)]) :-
+    zug(Start, Abfahrtszeit, Ziel, Ankunftszeit),
+    Abfahrtszeit >= AbfahrtszeitMin.
+
+% Rekursiver Fall: Verbindung mit Umsteigen
+verbindung(Start, AbfahrtszeitMin, Ziel, [zug(Start, Abfahrtszeit, Zwischenhalt, Ankunftszeit) | Rest]) :-
+    zug(Start, Abfahrtszeit, Zwischenhalt, Ankunftszeit),
+    Abfahrtszeit >= AbfahrtszeitMin,
+    verbindung(Zwischenhalt, Ankunftszeit, Ziel, Rest).
+```
+
+In diesem Prolog-Programm gibt es zwei Fälle:
+1. Der Basisfall, wenn es eine direkte Verbindung zwischen Start- und Zielort gibt, dann wird ein Zug hinzugefügt.
+2. Der rekursive Fall, wenn es keine direkte Verbindung gibt, dann wird ein Zug zum Zwischenhalt hinzugefügt und die Verbindung zum Zielort wird rekursiv gesucht.
+
+Ergebnis für `verbindung(konstanz, 8.00, mainz, Reiseplan).`:
+```
+?- verbindung(konstanz, 8.00, mainz, Reiseplan).
+Reiseplan = [zug(konstanz, 8.39, offenburg, 10.59), zug(offenburg, 11.28, mannheim, 12.24), zug(mannheim, 12.39, mainz, 13.18)] ;
+Reiseplan = [zug(konstanz, 8.39, karlsruhe, 11.49), zug(karlsruhe, 12.06, mainz, 13.47)] ;
+Reiseplan = [zug(konstanz, 9.06, singen, 9.31), zug(singen, 9.36, stuttgart, 11.32), zug(stuttgart, 11.51, mannheim, 12.28), zug(mannheim, 12.39, mainz, 13.18)] ;
+false.
+```
+
+## Abgabe 6
+
+### Aufgabe
 
 ### Vorgehensweise
 
