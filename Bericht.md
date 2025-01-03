@@ -132,6 +132,7 @@ In diesem Text wurden folgende Kategorien für die Token verwendet:
 3. Trennzeichen für Komma, Minus (welches bis bedeutet), Semikolon usw.
 4. Literale für Zeichenkette wie die Destination, Monate, Tage usw.
 
+\newpage
 
 ## Abgabe 2
 
@@ -584,6 +585,7 @@ Folgenden Nichtterminale werden in unserem AST weggelassen:
 2. Expr- und MultExpr-Knoten: Wenn diese Knoten nur ein Kind haben, werden sie weggelassen.
 3. Einige spezifische Nichtterminale: Wie statement, expression, comparison, die nur als Container für andere Knoten dienen und keine eigene Bedeutung im AST haben.
 
+\newpage
 
 ## Abgabe 3
 
@@ -862,6 +864,8 @@ If(
 ---
 ```
 
+\newpage
+
 ## Abgabe 4
 
 ### Aufgabe
@@ -1062,6 +1066,7 @@ etwas länger. Dies liegt daran, dass die Verarbeitung von Streams und Lambdas b
 sein kann als die Verarbeitung mit Schleifen und Verzweigungen. Bei großen Datenmengen hingegen ist die Verarbeitung
 mit Streams und Lambdas schneller, da sie parallelisiert werden können.
 
+\newpage
 
 ## Abgabe 5
 
@@ -1150,6 +1155,8 @@ Reiseplan = [zug(konstanz, 8.39, karlsruhe, 11.49), zug(karlsruhe, 12.06, mainz,
 Reiseplan = [zug(konstanz, 9.06, singen, 9.31), zug(singen, 9.36, stuttgart, 11.32), zug(stuttgart, 11.51, mannheim, 12.28), zug(mannheim, 12.39, mainz, 13.18)] ;
 false.
 ```
+
+\newpage
 
 ## Abgabe 6
 
@@ -1260,6 +1267,7 @@ Das Ergebnis ist nahezu identisch mit der Beispieldatei `aufgabe6.html` (nur die
 - Beim Auslesen der `aufgabe6.stg` Datei trat das Problem auf, dass durch das `<!DOCTYPE html>` ein Kommentar ausgelöst 
 aber nie beendet wurde. Die konnte durch Setzen anderer delimiter gelöst werden: `delimiters "$", "$"`.
 
+\newpage
 
 ## Abgabe 7
 
