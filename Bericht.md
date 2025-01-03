@@ -1263,6 +1263,56 @@ aber nie beendet wurde. Die konnte durch Setzen anderer delimiter gelöst werden
 
 ### Aufgabe
 
+Die Aufgabe bestand darin, ein Programm in einer Skriptsprache zu schreiben und zu analysieren, welche typischen
+Eigenschaften einer Skriptsprache darin ausgenutzt werden.
+
 ### Vorgehensweise
 
-### Probleme
+Für die Aufgabe haben wir uns für Python entschieden und ein simples Programm geschrieben, welches die vorgeschlagene
+feiertage-api aufruft:
+
+```python
+import requests
+
+def get_holidays(year, state):
+    """
+    Ruft Feiertage für ein bestimmtes Jahr und Bundesland von der API ab.
+    """
+    url = f"https://feiertage-api.de/api/?jahr={year}&nur_land={state}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Fehler bei HTTP-Statuscodes erkennen
+        holidays = response.json()
+        return holidays
+    except requests.exceptions.RequestException as e:
+        print(f"Fehler bei der Anfrage: {e}")
+        return None
+
+def main():
+    """
+    Hauptfunktion zur Eingabe und Ausgabe der Feiertage.
+    """
+    year = input("Geben Sie das Jahr ein (z. B. 2025): ")
+    state = input("Geben Sie das Bundesland ein (z. B. BW für Baden-Württemberg): ")
+
+    holidays = get_holidays(year, state)
+    if holidays:
+        print(f"\nFeiertage in {state} im Jahr {year}:\n")
+        for name, details in holidays.items():
+            print(f"{name}: {details['datum']}")
+    else:
+        print("Keine Feiertage gefunden oder ein Fehler ist aufgetreten.")
+
+if __name__ == "__main__":
+    main()
+```
+
+Dazu muss man das Jahr sowie das Bundesland eingeben, für welches man die Feiertage ausgegeben haben will.
+
+Hierbei werden folgende typische Eigenschaften für eine Skriptsprache ausgenutzt:
+- **Dynamische Typisierung**: Variablen wie year, state und holidays müssen nicht explizit deklariert werden. Der Datentyp wird zur Laufzeit bestimmt.
+- **Standardbibliotheken**: Mit Bibliotheken wie requests können HTTP-Anfragen einfach durchgeführt werden.
+- **Interpretation**: Python-Code wird zur Laufzeit interpretiert und nicht kompiliert.
+- **String-Interpolation**: Mit f-Strings können Variablen direkt in Strings eingebettet werden.
+- **Einfache Syntax**: Python hat eine einfache und leicht verständliche Syntax, die das Schreiben von Code erleichtert und wodurch das Entwickeln von Prototypen vereinfacht wird.
+- **Plattformunabhängigkeit**: Python-Code kann auf verschiedenen Plattformen ausgeführt werden, ohne dass Änderungen am Code erforderlich sind.
