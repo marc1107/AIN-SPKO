@@ -1153,6 +1153,116 @@ false.
 
 ### Aufgabe
 
+Es sollte eine Java-Klasse implementiert werden, die für beliebige Java-Klassen und -Interfaces eine HTML-Seite im Format 
+der Beispieldatei aufgabe6.html generiert.
+
+### Vorgehensweise
+
+Zuerst haben wir eine Klasse `Aufgabe6.java` erstellt:
+
+```java
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
+import org.stringtemplate.v4.STGroupFile;
+
+import java.util.*;
+
+public class Aufgabe6 {
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Bitte geben Sie mindestens eine Klasse oder ein Interface an.");
+            return;
+        }
+
+        List<Class<?>> classList = new ArrayList<>();
+
+        try {
+            for (String className : args) {
+                classList.add(Class.forName(className));
+            }
+
+            STGroup stGroup = new STGroupFile("Aufgabe6/aufgabe6.stg");
+            ST template = stGroup.getInstanceOf("root");
+
+            template.add("classes", classList);
+
+            System.out.println(template.render());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Klasse nicht gefunden: " + e.getMessage());
+        }
+    }
+}
+```
+
+Die Klasse `Aufgabe6` liest die Klassennamen aus den Argumenten und erstellt eine Liste von `Class`-Objekten.
+Anschließend wird ein `STGroup`-Objekt erstellt, um die Templates aus der Datei `aufgabe6.stg` zu laden.
+Das `root`-Template wird geladen und die Liste der Klassen hinzugefügt. Das gerenderte Template wird dann ausgegeben.
+
+Die Datei `aufgabe6.stg` enthält die Templates für die HTML-Generierung:
+
+```html
+group aufgabe6;
+
+delimiters "$", "$"
+
+root(classes) ::= <<
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<style type="text/css">
+th, td { border-bottom: thin solid; padding: 4px; text-align: left; }
+td { font-family: monospace }
+</style>
+</head>
+<body>
+<h1>Sprachkonzepte, Aufgabe 6</h1>
+$classes:{class |
+<h2>$if(class.interface)$interface$else$class$endif$ $class.name$:</h2>
+<table>
+$if(class.interface)$
+<tr><th>Methods</th></tr>
+<tr><td>$class.methods:{method | $method.returnType.name$ $method.name$($method.parameters:{param | $param.type.name$}; separator=", "$)<br>}$</td></tr>
+$else$
+<tr><th>Interface</th><th>Methods</th></tr>
+$class.interfaces:{interface |
+<tr>
+<td valign="top">$interface.name$</td>
+<td>$interface.methods:{method | $method.returnType.name$ $method.name$($method.parameters:{param | $param.type.name$}; separator=", "$)<br>}$</td></tr>
+}$
+$endif$
+</table>
+<br>
+}$
+</body>
+</html>
+>>
+```
+
+Die Templates enthalten eine Schleife über die Liste der Klassen, um für jede Klasse ein HTML-Element zu generieren.
+Für jede Klasse wird der Name und die Methoden aufgelistet. Falls es sich um eine Klasse mit Interfaces handelt, wird zusätzlich
+eine Liste der Interfaces angezeigt.
+
+Aufgerufen wird das Programm mit den Klassennamen als Argumente:
+
+```
+java -cp ../antlr-4.9.2-complete.jar Aufgabe6.java java.lang.String java.util.Iterator java.time.Month
+```
+
+Das Programm generiert dann die HTML-Seite und gibt sie auf der Konsole aus.
+Das Ergebnis ist nahezu identisch mit der Beispieldatei `aufgabe6.html` (nur die Reihenfolge der Methoden kann leicht abweichen).:
+
+![Ergebnis](Aufgabe6/Ergebnis.png)
+
+### Probleme
+
+- Beim Auslesen der `aufgabe6.stg` Datei trat das Problem auf, dass durch das `<!DOCTYPE html>` ein Kommentar ausgelöst 
+aber nie beendet wurde. Die konnte durch Setzen anderer delimiter gelöst werden: `delimiters "$", "$"`.
+
+
+## Abgabe 7
+
+### Aufgabe
+
 ### Vorgehensweise
 
 ### Probleme
