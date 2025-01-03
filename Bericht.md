@@ -1,15 +1,17 @@
 # Bericht Sprachkonzepte
 
+Marc Bohner, Stefan Willmann
+
 ## Abgabe 1
 
 ### Aufgabe
 
-Es soll ein Text mit ANTLR4 Lexer-Regeln beschreiben und eine Anwendung erstellet werden,
+Es sollte ein Text mit ANTLR4 Lexer-Regeln beschrieben und eine Anwendung erstellt werden,
 die den Text einliest und als Tokenfolge ausgibt.
 
 ### Vorgehensweise
 
-Zur Bearbeitung habe ich mich für den Text "abfahrt-kn.txt" entschieden. In diesem Text 
+Zur Bearbeitung haben wir uns für den Text "abfahrt-kn.txt" entschieden. In diesem Text 
 geht es um die Abfahrtszeiten von Bussen, Zügen sowie Schiffen mit Zielort und genauen
 Datumsangaben mit Wochentagen, Monaten, Jahren sowie Ausnahmen von Tagen an denen das 
 Verkehrsmittel nicht fährt.
@@ -61,7 +63,7 @@ Durch die Ausführung des Befehls `antlr4 AbfahrtenLexer.g4` wird der Lexer gene
 
 Die Klasse `ExpressionTokenizer` wurde erstellt, um die Tokenfolge aus dem Text zu generieren.
 Dazu wird die Datei "abfahrt-kn.txt" eingelesen, anschließend die generierte Klassen `AbfahrtenLexer`
-aufgerufen um die Token zu generieren und die Tokenfolge ausgegeben.
+aufgerufen, um die Token zu generieren und die Tokenfolge ausgegeben.
 
 ```java
 public class ExpressionTokenizer {
@@ -118,9 +120,9 @@ EXCEPTION("nicht") DAY("11.") COMMA(",") DAY("12.") MONTH("Mai") COMMA(",") DAY(
 
 #### Probleme
 
-1. Die Library von ANTLR4 wurde zuerst nicht richtig erkannt. Dieses Problem konnte durch importieren der Library in IntelliJ gelöst werden.
+1. Die Library von ANTLR4 wurde zuerst nicht richtig erkannt. Dieses Problem konnte durch Importieren der Library in IntelliJ gelöst werden.
 2. Wörter wie "bis", "nicht", "nach" usw. wurden als "DESTINATION" Token erkannt. Dieses Problem konnte durch explizite Angabe der Keywörter und Beachtung der Reihenfolge der Token in der Lexer-Datei gelöst werden.
-3. Allgmeines Verständnis zum Unterschied von Lexer und Parser. Mein erster Versuch war direkt Regeln mit der richtigen Reihenfolge, also z.B. TIME, BUS, DESTINATION zu definieren, was allerdings bereits einem Parser gleicht und für Lexer Regeln zu komplex gedacht ist.
+3. Allgemeines Verständnis zum Unterschied von Lexer und Parser. Unser erster Versuch war direkt Regeln mit der richtigen Reihenfolge, also z.B. TIME, BUS, DESTINATION zu definieren, was allerdings bereits einem Parser gleicht und für Lexer Regeln zu komplex gedacht ist.
 
 ### Vokabular-Kategorien aus VL Folie 2-4 für den Text
 
@@ -128,7 +130,7 @@ In diesem Text wurden folgende Kategorien für die Token verwendet:
 1. Zwischenraum (whitespace) für Leerzeichen, Tabs und Zeilenumbrüche
 2. Schlüsselwörter für Wörter wie bis, nach, täglich und nicht
 3. Trennzeichen für Komma, Minus (welches bis bedeutet), Semikolon usw.
-4. Literale für Zeichenketter wie die Destination, Monate, Tage usw.
+4. Literale für Zeichenkette wie die Destination, Monate, Tage usw.
 
 
 ## Abgabe 2
@@ -137,13 +139,13 @@ In diesem Text wurden folgende Kategorien für die Token verwendet:
 
 Für den Teil a) der zweiten Abgabe sollte sich eine kleine Sprache ausgedacht werden, für welche ein Lexer und Parser erstellt werden soll.
 Anschließend sollte für einige Beispieltexte der Parse Tree mit org.antlr.v4.gui.TestRig visualisiert werden.
-Im Teil b) sollte die abstrakte Syntax aus Teil a) definiert und ein Java-Programm zur Überführung des Parse Trees in einen abstrakten Syntax Baum erstellt werden.
+Im Teil b) sollte die abstrakte Syntax aus Teil a) definiert und ein Java-Programm zur Überführung des Parse Trees in einen abstrakten Syntaxbaum erstellt werden.
 
 ### Vorgehensweise
 
 #### a) Lexer und Parser
 
-Für den Teil a) habe ich mich für eine simple Programmiersprache entschieden, welche simple Anweisungen wie if-else, print und Rechenoperationen unterstützt.
+Für den Teil a) haben wir uns für eine simple Programmiersprache entschieden, welche simple Anweisungen wie if-else, print und Rechenoperationen unterstützt.
 Die Art der Syntax ist sehr JavaScript ähnlich.
 
 Folgende Beispieltexte werden von der Sprache unterstützt:
@@ -213,7 +215,7 @@ RBRACE: '}';
 WS: [ \t\r\n]+ -> skip;
 ```
 
-Außerdem habe ich folgende Parser Regeln definiert:
+Außerdem haben wir folgende Parser Regeln definiert:
 
 ```antlrv4
 // SimpleLangParser.g4
@@ -251,7 +253,7 @@ comparison:
 
 Nach Ausführen von `antlr4 SimpleLangLexer.g4` und `antlr4 SimpleLangParser.g4` konnten die erstellten Dateien mit javac *.java kompiliert werden.
 Anschließend konnte mit dem Command `grun SimpleLang program -gui <Testfile>` der Parse Tree visualisiert werden.
-Dies habe ich für alle 3 Testfiles durchgeführt.
+Dies haben wir für alle 3 Testfiles durchgeführt.
 
 Hier das Ergebnis für Test 1.txt:
 ![Parse Tree Test 1](Abgabe2/antlr4_parse_tree_test1.png)
@@ -267,15 +269,15 @@ Ergebnis für Test 3.txt:
 Bei der Erstellung des Parse Trees gab es Schwierigkeiten mit der Ausführung von TestRig.
 Hierbei wurde der Befehl `grun` anfangs nicht erkannt. Dies lag an einem Problem beim Hinzufügen des Alias in der zsh config.
 Dabei wurde der Alias nicht richtig angelegt und musste durch Öffnen der .zshrc Datei und Hinzufügen des Alias manuell gelöst werden.
-Außerdem hatte ich Probleme beim Ausführen des grun Befehls, da ich es zuerst mit dem SimpleLangLexer versucht habe.
+Außerdem hatten wir Probleme beim Ausführen des grun Befehls, da wir es zuerst mit dem SimpleLangLexer versucht haben.
 Allerdings wurde nur `SimpleLang` im command benötigt.
 
 #### b) AST in Java
 
-Für den Teil b) habe ich die abstrakte Syntax definiert und ein Java-Programm erstellt, welches den Parse Tree in einen abstrakten Syntax Baum überführt.
-Um die abstrakte Syntax in Java zu definieren habe ich die einzelnen Klassen für die verschiedenen Anweisungen, wie z.B. expressions, if-else, usw. erstellt.
+Für den Teil b) haben wir die abstrakte Syntax definiert und ein Java-Programm erstellt, welches den Parse Tree in einen abstrakten Syntaxbaum überführt.
+Um die abstrakte Syntax in Java zu definieren haben wir die einzelnen Klassen für die verschiedenen Anweisungen, wie z.B. expressions, if-else, usw. erstellt.
 
-Außerdem habe ich eine Klasse `SimpleLangBuilder.java` erstellt, welche Methoden zum traversieren des Parse Trees enthält.
+Außerdem haben wir eine Klasse `SimpleLangBuilder.java` erstellt, welche Methoden zum traversieren des Parse Trees enthält.
 Dabei wird für jede Anweisung im Parse Tree eine Methode aufgerufen, welche die entsprechende abstrakte Syntax Klasse erstellt und zurückgibt.
 
 ```java
@@ -357,7 +359,7 @@ public class SimpleLangBuilder extends SimpleLangParserBaseListener {
 ```
 
 
-Die einzelnen Node Klassen des AST habe ich in der SimpleLangBuilder.java Datei erstellt.
+Die einzelnen Node Klassen des AST haben wir in der SimpleLangBuilder.java Datei erstellt.
 Diese Klassen bauen sich die Expressions und Statements rekursiv auf und speichern die Werte in den entsprechenden Klassen.
 Mit der toString Methode kann der AST ausgegeben werden.
 
@@ -492,7 +494,7 @@ class BinaryOperationNode extends ExpressionNode {
 }
 ```
 
-Um den AST zu erstellen wurde eine Java-Klasse `SimpleLangToAST.java` erstellt, welche änhlich wie in Abgabe 1 eine Textdatei einliest,
+Um den AST zu erstellen wurde eine Java-Klasse `SimpleLangToAST.java` erstellt, welche ähnlich wie in Abgabe 1 eine Textdatei einliest,
 die Token generiert und den Parse Tree erstellt und diesen mithilfe von `SimpleLangBuilder` in einen AST umwandelt.
 
 ```java
@@ -572,12 +574,12 @@ Declaration('b', BinaryOperation('Identifier(a)', '+', 'Number(2)'), Print(Ident
 
 #### Welche Terminale und Nichtterminale aus dem Ableitungsbaum werden in Ihrem AST weggelassen?
 
-Folgende Terminale werden in meinem AST weggelassen:
+Folgende Terminale werden in unserem AST weggelassen:
 1. Klammern: (, ), {, }
 2. Trennzeichen: ;
 3. Whitespace: Leerzeichen, Tabs und Zeilenumbrüche
 
-Folgenden Nichtterminale werden in meinem AST weggelassen:
+Folgenden Nichtterminale werden in unserem AST weggelassen:
 1. Primary-Knoten: Diese Knoten, die nur ein Kind haben, werden weggelassen, um die Struktur zu vereinfachen.
 2. Expr- und MultExpr-Knoten: Wenn diese Knoten nur ein Kind haben, werden sie weggelassen.
 3. Einige spezifische Nichtterminale: Wie statement, expression, comparison, die nur als Container für andere Knoten dienen und keine eigene Bedeutung im AST haben.
@@ -610,12 +612,12 @@ Ja, die konkrete Syntax erlaubt Formulierungen, die die statische Semantik verle
 - Mehrfachdeklaration: Die Grammatik erlaubt es, dass eine Variable mehrmals im selben Gültigkeitsbereich deklariert wird.<br>
 
 #### Statische Semantikprüfung
-Um die statische Semantikprüfung zu implementieren, habe ich meine Klasse `SimpleLangBuilder` erweitert.
-Zuerst habe ich eine Map `symbolTable` erstellt, um die Variablendeklarationen zu speichern.
+Um die statische Semantikprüfung zu implementieren, haben wir unsere Klasse `SimpleLangBuilder` erweitert.
+Zuerst haben wir eine Map `symbolTable` erstellt, um die Variablendeklarationen zu speichern.
 Außerdem wurde eine Methode zur Ausgabe eines Semantikfehlers hinzugefügt. Diese Methode wird aufgerufen, wenn ein Fehler
 in der statischen Semantik gefunden wird und gibt die Zeile und Position des Fehlers sowie die Ursache aus.
 
-Anschließend habe ich die Methoden `exitDeclaration` sowie `exitExpression` erweitert, um die Variablendeklarationen zu überprüfen.
+Anschließend haben wir die Methoden `exitDeclaration` sowie `exitExpression` erweitert, um die Variablendeklarationen zu überprüfen.
 Bei 'exitDeclaration' wird überprüft, ob die Variable bereits deklariert wurde, um sicherzustellen, dass keine Variable doppelt
 deklariert wird. Bei 'exitExpression' wird überprüft, ob die Variable vorher deklariert wurde, damit sie ohne Deklaration
 aufgerufen werden kann.
@@ -665,7 +667,7 @@ public void exitExpression(SimpleLangParser.ExpressionContext ctx) {
 }
 ```
 
-Um zu Testen, ob die statische Semantikprüfung funktioniert, habe ich folgenden Testfall erstellt:
+Um zu Testen, ob die statische Semantikprüfung funktioniert, haben wir folgenden Testfall erstellt:
 
 ```javascript
 // Test 4.txt
@@ -694,9 +696,9 @@ Declaration('a', Number(4), Print(Identifier(c))
 
 #### b) Dynamische Semantik
 
-Um eine dynamische Semantikprüfung einzufügen habe ich meine Sprache etwas erweitern müssen.
-Dazu habe ich in meiner 'SimpleLangLexer.g4' Datei die Möglichkeit hinzugefügt, einer Variablen nicht nur Numbers 
-sondern auch Strings zuzuordnen. In meinem 'SimpleLangParser.g4' habe ich die Möglichkeit hinzugefügt, Variablen während
+Um eine dynamische Semantikprüfung einzufügen haben wir unsere Sprache etwas erweitern müssen.
+Dazu haben wir in unserer 'SimpleLangLexer.g4' Datei die Möglichkeit hinzugefügt, einer Variablen nicht nur Numbers, 
+sondern auch Strings zuzuordnen. In unserem 'SimpleLangParser.g4' haben wir die Möglichkeit hinzugefügt, Variablen während
 der Laufzeit zu verändern.
 
 Die neuen Lexer und Parser Dateien sehen nun wie folgt aus:
@@ -781,7 +783,7 @@ comparison:
     ;
 ```
 
-Außerdem habe ich die statische Semantik zur Eintragung von Strings in die Symboltabelle erweitert und 
+Außerdem haben wir die statische Semantik zur Eintragung von Strings in die Symboltabelle erweitert und 
 erneute Assignments zugelassen, um Variablen während der Laufzeit zu verändern:
 
 ```java
@@ -822,7 +824,7 @@ erneute Assignments zugelassen, um Variablen während der Laufzeit zu verändern
     }
 ```
 
-To test the dynamic semantics, I created the following test case:
+Um die dynamische Semantikprüfung zu testen, haben wir folgenden Testfall erstellt:
 
 ```javascript
 // Test 5.txt
@@ -838,7 +840,7 @@ if (a == b) {
 }
 ```
 
-Which produces the following output when executed:
+Was den folgenden Output generiert:
 
 ```
 Line 6:4 - Type mismatch: cannot compare string with number
@@ -866,7 +868,7 @@ If(
 
 In Aufgabenteil a) sollte ein gegebenes Java Programm um die Klassenmethoden readLines, removeEmptyLines, 
 removeShortLines und totalLineLengths mit Verwendung von Schleifen und Verzweigungen erweitert werden.
-Um Teil b) zu lösen, sollte das in a) geschriebene Programm mit Hilfe von java.util.streams und Lambdas auf einen
+Um Teil b) zu lösen, sollte das in a) geschriebene Programm mithilfe von java.util.streams und Lambdas auf einen
 funktionalen Stil umgestellt werden, wobei das Programm danach keine Schleifen, Verzweigungen und Seiteneffekte mehr
 aufweisen darf. Anschließend sollten die beiden Programme in Teil c) verglichen werden.
 
@@ -942,7 +944,7 @@ public final class Procedural {
 
 ### Teil b)
 
-Das Programm wurde in der Klasse `Functional` umgeschrieben, um die Methoden mit Hilfe von Streams und Lambdas
+Das Programm wurde in der Klasse `Functional` umgeschrieben, um die Methoden mithilfe von Streams und Lambdas
 in einen funktionalen Stil umzustellen. Dabei wurden die Methoden `readLines`, `removeEmptyLines`, `removeShortLines`
 und `totalLineLengths` umgeschrieben.
 
@@ -1009,7 +1011,7 @@ public final class Functional {
 
 ### Teil c) Vergleich
 
-Für den Vergleich habe ich 2 Testdateien erstellt, eine kurz und eine lang, um die Unterschiede in der Laufzeit zu sehen.
+Für den Vergleich haben wir 2 Testdateien erstellt, eine kurz und eine lang, um die Unterschiede in der Laufzeit zu sehen.
 Die längere Testdatei hat denselben Inhalt, allerdings mehrfach kopiert, um insgesamt 28013 Zeilen zu haben.
 Die kurze Testdatei hat 6 Zeilen.
 
@@ -1023,7 +1025,7 @@ Zeile mit genau zwanzig Zeichen.
 Noch eine lange Zeile mit mehr als zwanzig Zeichen.
 ```
 
-Für beide Testdateien habe ich die Laufzeit für die prozedurale und funktionale Implementierung gemessen.
+Für beide Testdateien haben wir die Laufzeit für die prozedurale und funktionale Implementierung gemessen.
 Das Programm wurde jeweils 5 Mal ausgeführt und die Laufzeit gemittelt.
 
 **Ergebnisse für die kurze Testdatei:**
