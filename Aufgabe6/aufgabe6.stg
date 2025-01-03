@@ -1,0 +1,35 @@
+group aufgabe6;
+
+delimiters "$", "$"
+
+root(classes) ::= <<
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<style type="text/css">
+th, td { border-bottom: thin solid; padding: 4px; text-align: left; }
+td { font-family: monospace }
+</style>
+</head>
+<body>
+<h1>Sprachkonzepte, Aufgabe 6</h1>
+$classes:{class |
+<h2>$if(class.interface)$interface$else$class$endif$ $class.name$:</h2>
+<table>
+$if(class.interface)$
+<tr><th>Methods</th></tr>
+<tr><td>$class.methods:{method | $method.returnType.name$ $method.name$($method.parameters:{param | $param.type.name$}; separator=", "$)<br>}$</td></tr>
+$else$
+<tr><th>Interface</th><th>Methods</th></tr>
+$class.interfaces:{interface |
+<tr>
+<td valign="top">$interface.name$</td>
+<td>$interface.methods:{method | $method.returnType.name$ $method.name$($method.parameters:{param | $param.type.name$}; separator=", "$)<br>}$</td></tr>
+}$
+$endif$
+</table>
+<br>
+}$
+</body>
+</html>
+>>
